@@ -33,7 +33,7 @@ export default {
 Or `quasar.config.js`
 
 ```js
-import viteStringReplacement from 'vite-string-replacement';
+const viteStringReplacement = require('vite-string-replacement');
 
 module.export = configure(function () {
   vitePlugins: [
