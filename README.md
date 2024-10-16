@@ -10,25 +10,30 @@ npm install vite-string-replacement --save-dev
 
 ## Usage
 
-Add the plugin to ```vite.config.js```:
+Add the plugin to `vite.config.js`:
+
 ```js
 import viteStringReplacement from 'vite-string-replacement';
 
 export default {
   plugins: [
-    viteStringReplacement({
-      replacements: [
-        { from: 'foo', to: 'bar' }
-      ]
-    })
-  ]
+    viteStringReplacement([
+      {
+        filter: /\.vue/,
+        replace: {
+          from: 'foo',
+          to: 'bar',
+        },
+      },
+    ]),
+  ],
 };
-
 ```
-Or ```quasar.config.js```
+
+Or `quasar.config.js`
 
 ```js
-import viteStringReplacement from "vite-string-replacement";
+import viteStringReplacement from 'vite-string-replacement';
 
 module.export = configure(function () {
   vitePlugins: [
@@ -36,18 +41,22 @@ module.export = configure(function () {
       [
         {
           filter: /\.vue$|\.js$|\.ts$|\.scss$|.css$/,
-          replace: {
-            from: /\/?imgs\//gim,
-            to: "https://external-storage.url",
-          },
+          replace: [
+            {
+              from: /\/?imgs\//gim,
+              to: 'https://external-storage.url/imgs/',
+            },
+            {
+              from: /\/?audio\//gim,
+              to: 'https://external-storage.url/audio/',
+            },
+          ],
         },
       ],
       {
-        apply: "build", // "serve" for dev
-      }
+        apply: 'build', // "serve" for dev
+      },
     ),
   ];
 });
-
-
 ```
