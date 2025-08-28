@@ -63,7 +63,6 @@ export default function replace(
   options: Options = { apply: 'build' },
 ): Plugin {
   const resolvedReplacements = relpacementResolver(replacements);
-  let cmd: 'serve' | 'build';
   if (!resolvedReplacements.length) return {} as any;
 
   function replace(code: string, id: string): string {
@@ -77,21 +76,15 @@ export default function replace(
   return {
     name: 'vite-string-replacement',
     apply: options.apply,
-    config: (_, env) => {
-      cmd = env.command;
-    },
-    renderChunk(code, chunk) {
-      if (cmd === 'serve') return null;
-      return replace(code, chunk.fileName);
+    generateBundle(_, bundle) {
+      Object.entries(bundle).forEach(([fileName, chunk]) => {
+        if(chunk.type === 'asset') {
+          chunk.source = replace(chunk.source as string, fileName);
+        }
+      });
     },
     transform(code: string, id: string) {
       return replace(code, id);
-    },
-    async handleHotUpdate(ctx) {
-      const defaultRead = ctx.read;
-      ctx.read = async function () {
-        return replace(await defaultRead(), ctx.file);
-      };
     },
   };
 }
